@@ -4,104 +4,137 @@
 #include <algorithm>
 
 using namespace std;
-bool inf = false;
 
-// Начальная точка
-vector<double> x0 = { 1.0, 1.0 };
-double f(vector<double> x) {
-    // Функция
-    return pow(1-x[0], 2) + pow(x[1] + 1, 2);
+struct Point {
+    vector <double > x;
+
+    int size() {
+        return x.size();
+    }
+
+    void debug();
+};
+
+double f(Point x) {
+    // Функция Розенброка
+    return pow(1-x.x[0], 2) + 100*pow(x.x[1] - x.x[0]*x.x[0], 2);
 }
 
-vector<vector<double>> simplex(vector<double> x0, double delta) {
+void Point::debug() {
+    cout << endl;
+    for (int i = 0; i < x.size(); i++) {
+        cout << x[i] << ' ';
+    }
+    cout << " =  " << f(*this);
+    cout << endl;
+}
+
+Point operator*(double k, Point p) {
+    Point result = p;
+    for (int i = 0; i < p.size(); i++) result.x[i] *= k;
+    return result;
+}
+
+Point operator+(Point pf, Point ps) {
+    Point result = pf;
+    for (int i = 0; i < ps.size(); i++) result.x[i] += ps.x[i];
+    return result;
+}
+
+Point operator-(Point pf, Point ps) {
+    Point result = pf;
+    for (int i = 0; i < ps.size(); i++) result.x[i] -= ps.x[i];
+    return result;
+}
+
+struct Parameters {
+    double delta;
+    double alpha;
+    double gamma;
+    double beta;
+    double sigma;
+    double tol;
+};
+
+vector<Point> simplex(Point x0, double delta) {
     int n = x0.size();
-    vector<vector<double>> res(n + 1);
+    vector<Point> res(n + 1);
     res[0] = x0;
     for (int i = 1; i <= n; i++) {
         res[i] = x0;
-        res[i][i - 1] += delta;
+        res[i].x[i - 1] += delta;
     }
     return res;
 }
 
-vector<vector<double>> sort_simplex(vector<vector<double>> s) {
-    sort(s.begin(), s.end(), [](vector<double> a, vector<double> b) {return f(a) < f(b); });
+vector<Point> sort_simplex(vector<Point> s) {
+    sort(s.begin(), s.end(), [](Point a, Point b) {return f(a) < f(b); });
     return s;
 }
 
 // Поиск центра тяжести
-vector<double> centroid(vector<vector<double>> s) {
+Point centroid(vector<Point> s) {
     int n = s.size() - 1;
-    vector<double> res(n);
+    Point res = s[0];
     for (int i = 0; i < n; i++) {
         double sum = 0;
-        for (int j = 0; j < n; j++) sum += s[j][i];
-        res[i] = sum / n;
+        for (int j = 0; j < n; j++) {
+            sum += s[j].x[i];
+        }
+        res.x[i] = sum / n;
     }
     return res;
 }
 
 // Отражение
-vector<double> reflection(vector<double> x, vector<double> c, double alpha) {
-    int n = x.size();
-    vector<double> xr(n);
-    for (int i = 0; i < n; i++) xr[i] = (alpha + 1) * c[i] - alpha * x[i];
+Point reflection(Point x, Point c, double alpha) {
+    Point xr = x;
+    xr = (alpha + 1) * c - alpha * x;
     return xr;
 }
 
 // Расширение
-vector<double> expansion(vector<double> xr, vector<double> c, double gamma) { 
-    int n = xr.size();
-    vector<double> xe(n);
-    for (int i = 0; i < n; i++) xe[i] = (1 - gamma) * c[i] + gamma * xr[i];
+Point expansion(Point xr, Point c, double gamma) {
+    Point xe;
+    xe = (1 - gamma) * c + gamma * xr;
     return xe;
 }
 
 // Сжатие
-vector<double> contraction(vector<double> x, vector<double> c, double beta){
-    int n = x.size();
-    vector<double> xc(n);
-    for (int i = 0; i < n; i++) xc[i] = (1 + beta) * c[i] - beta * x[i];
+Point contraction(Point x, Point c, double beta) {
+    Point xc;
+    xc = (1 + beta) * c - beta * x;
     return xc;
 }
 
 // Глобальное сжатие
-vector<vector<double>> shrink(vector<vector<double>> s, double sigma) {
+vector<Point> shrink(vector<Point> s, double sigma) {
     int n = s.size() - 1;
     for (int i = 1; i <= n; i++)
-        for (int j = 0; j < n; j++)
-            s[i][j] = s[0][j] + sigma * (s[i][j] - s[0][j]);
+        s[i] = s[0] + sigma * (s[i] - s[0]);
     return s;
 }
 
-vector<double> NelderMead(vector<double> x0, double delta, double alpha, double gamma, double beta, double sigma, double tol) {
+double NelderMead(Point x0, Parameters parameter) {
     int n = x0.size();
-    vector<vector<double>> s = simplex(x0, delta);
+    vector<Point> s = simplex(x0, parameter.delta);
     int iter = 0;
     while (true) {
         iter++;
         s = sort_simplex(s);
         if (abs(f(s[n - 1])) >= INFINITY) {
-            cout << "no global minimum";
-            inf = true;
             break;
         }
-        /*for (int i = 0; i < s[n - 1].size(); i++) cout << s[n - 1][i] << ' ';
-        cout << endl;
-        cout << f(s[n - 1]);
-        cout << endl;
-        cout << endl;*/
-        if (abs(f(s[n]) - f(s[0])) <= tol && iter > 100) break; // Условие останова
-
-        vector<double> c = centroid(s);
-        vector<double> xr = reflection(s[n], c, alpha);
-
+        if (abs(f(s[n]) - f(s[0])) <= parameter.tol && iter > 100) break; // Условие останова
+ 
+        Point c = centroid(s);
+        Point xr = reflection(s[n], c, parameter.alpha);
         if (f(xr) < f(s[n - 1])) {
             if (f(xr) >= f(s[0])) {
                 s[n] = xr;
             }
             else {
-                vector<double> xe = expansion(xr, c, gamma);
+                Point xe = expansion(xr, c, parameter.gamma);
                 if (f(xe) < f(s[0])) {
                     s[n] = xe;
                 }
@@ -114,31 +147,41 @@ vector<double> NelderMead(vector<double> x0, double delta, double alpha, double 
             if (f(xr) < f(s[n])) {
                 s[n] = xr;
             }
-            vector<double> xc = contraction(s[n], c, beta);
+            Point xc = contraction(s[n], c, parameter.beta);
             if (f(xc) < f(s[n])) {
                 s[n] = xc;
             }
             else {
-                s = shrink(s, sigma);
+                s = shrink(s, parameter.sigma);
             }
         }
     }
-    return s[0];
+    x0 = s[0];
+    return f(s[0]);
 }
 
 int main() {
-    double delta = 1.0;
-    double alpha = 1.0;
-    double gamma = 2.0;
-    double beta  = 0.5;
-    double sigma = 0.5;
-    double tol  = 0.00001;
+    // Начальная точка
+    Point x0;
+    x0.x = { 1.0, 1.0 };
 
-    vector<double> res = NelderMead(x0, delta, alpha, gamma, beta, sigma, tol);
-    if (inf) return 0;
+    Parameters parameter;
+    parameter.delta = 1.0;
+    parameter.alpha = 1.0;
+    parameter.gamma = 2.0;
+    parameter.beta = 0.5;
+    parameter.sigma = 0.5;
+    parameter.tol = 0.00001;
+
+    Point res = x0;
+    double result = NelderMead(x0, parameter);
+    if (result <= -INFINITY) {
+        cout << "No global minimum" << endl;
+        return 0;
+    }
     cout << fixed;
     cout.precision(5);
     cout << "Result: ";
-    for (double x : res) cout << x << " ";
+    res.debug();
     return 0;
 }
