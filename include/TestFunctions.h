@@ -3,12 +3,13 @@
 #include <functional>
 
 // Проверка результата работы алгоритма
-bool CheckResult(Point p, function<double(Point)> f) {
+void CheckResult(Point p, function<double(Point)> f) {
     if (f(p) <= -INFINITY) {
         cout << "No global minimum" << endl;
-        return false;
     }
-    return true;
+    else {
+        p.debug(f);
+    }
 }
 
 double Rosenbrook(Point p) {
