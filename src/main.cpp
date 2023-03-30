@@ -23,3 +23,4 @@ int main() {
     CheckResult(result, func);
     return 0;
 }
+
