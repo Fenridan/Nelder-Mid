@@ -20,8 +20,6 @@ int main() {
 
     Point result = NelderMead(num, parameter, func);
 
-    if (CheckResult(result, func)) {
-        result.debug();
-    }
+    CheckResult(result, func);
     return 0;
 }
