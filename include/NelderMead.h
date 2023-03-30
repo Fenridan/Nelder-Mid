@@ -18,7 +18,7 @@ Point NelderMead(int n, Parameters parameter, function<double(Point)> f) {
 
         s = sort_simplex(s, n + 1, f);
 
-        if (FindEdge(s[n], s[0]) <= parameter.tol || f(s[n - 1]) <= -INFINITY) break; // Óñëîâèå îñòàíîâà
+        if (FindEdge(s[n], s[0]) <= parameter.tol || f(s[n - 1]) <= -INFINITY) break; // Ð£ÑÐ»Ð¾Ð²Ð¸Ðµ Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð°
 
         Point c = centroid(s, n);
         Point xr = reflection(s[n], c, parameter.alpha);
