@@ -1,2 +1,2 @@
-# Nelder-Mid
+# Nelder-Mead
 Денисов Роман
