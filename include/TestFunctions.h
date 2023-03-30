@@ -2,7 +2,7 @@
 #include "Point.h"
 #include <functional>
 
-// Проверка результата работы алгоритма
+// РџСЂРѕРІРµСЂРєР° СЂРµР·СѓР»СЊС‚Р°С‚Р° СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°
 bool CheckResult(Point p, function<double(Point)> f) {
     if (f(p) <= -INFINITY) {
         cout << "No global minimum" << endl;
@@ -12,12 +12,12 @@ bool CheckResult(Point p, function<double(Point)> f) {
 }
 
 double Rosenbrook(Point p) {
-    // Функция Розенброка
+    // Р¤СѓРЅРєС†РёСЏ Р РѕР·РµРЅР±СЂРѕРєР°
     return pow(1 - p.x[0], 2) + 100 * pow(p.x[1] - p.x[0] * p.x[0], 2);
 }
 
 double Himmelblau(Point p) {
-    // Функция Химмельблау
+    // Р¤СѓРЅРєС†РёСЏ РҐРёРјРјРµР»СЊР±Р»Р°Сѓ
     return pow(p.x[0] * p.x[0] + p.x[1] - 11, 2) + pow(p.x[0] + p.x[1] * p.x[1] - 7, 2);
 }
 
