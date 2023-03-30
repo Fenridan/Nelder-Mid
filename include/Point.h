@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <functional>
 
 using namespace std;
 
@@ -25,6 +26,18 @@ public:
     }
 
     // Вывод точки
+    void debug(function<double(Point)> f) {
+        cout << endl;
+        cout << fixed;
+        cout.precision(3);
+        cout << "Result: ";
+        for (int i = 0; i < num; i++) {
+            cout << x[i] << ' ';
+        }
+        cout << " with answer:" << f(*this) << endl;
+        cout << endl;
+    }
+
     void debug() {
         cout << endl;
         cout << fixed;
@@ -35,6 +48,7 @@ public:
         }
         cout << endl;
     }
+
     int size() {
         return num;
     }
