@@ -28,3 +28,7 @@ double FuncDuo(Point p) {
 double FuncThrio(Point p) {
     return pow(3 - p.x[0], 2) + pow(p.x[1] - p.x[0] * p.x[0], 4) + pow(p.x[2] * p.x[1] - 18, 2);
 }
+
+double FuncUno(Point p) {
+    return p.x[0]*p.x[0] - 10*p.x[0] + 25;
+}
