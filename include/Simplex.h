@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <functional>
 
-// Генерация начального симплекса
+// Р“РµРЅРµСЂР°С†РёСЏ РЅР°С‡Р°Р»СЊРЅРѕРіРѕ СЃРёРјРїР»РµРєСЃР°
 Point* simplex(Point x0, double delta) {
     int n = x0.size();
     Point* res = new Point[n + 1];
@@ -15,7 +15,7 @@ Point* simplex(Point x0, double delta) {
     return res;
 }
 
-// Сортировка симплекса
+// РЎРѕСЂС‚РёСЂРѕРІРєР° СЃРёРјРїР»РµРєСЃР°
 Point* sort_simplex(Point* s, int n, function <double(Point)> f) {
     sort(s, s + n, [f](Point a, Point b) {return f(a) < f(b); });
     return s;
