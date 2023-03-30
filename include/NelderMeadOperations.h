@@ -1,7 +1,7 @@
 #pragma once
 #include "Point.h"
 
-// Поиск центра тяжести
+// РџРѕРёСЃРє С†РµРЅС‚СЂР° С‚СЏР¶РµСЃС‚Рё
 Point centroid(Point* s, int n) {
     Point res(n);
     for (int i = 0; i < n; i++) {
@@ -14,35 +14,35 @@ Point centroid(Point* s, int n) {
     return res;
 }
 
-// Отражение
+// РћС‚СЂР°Р¶РµРЅРёРµ
 Point reflection(Point x, Point c, double alpha) {
     Point xr(x.size());
     xr = (alpha + 1) * c - alpha * x;
     return xr;
 }
 
-// Расширение
+// Р Р°СЃС€РёСЂРµРЅРёРµ
 Point expansion(Point xr, Point c, double gamma) {
     Point xe(xr.size());
     xe = (1 - gamma) * c + gamma * xr;
     return xe;
 }
 
-// Сжатие
+// РЎР¶Р°С‚РёРµ
 Point contraction(Point x, Point c, double beta) {
     Point xc(x.size());
     xc = (1 + beta) * c - beta * x;
     return xc;
 }
 
-// Глобальное сжатие
+// Р“Р»РѕР±Р°Р»СЊРЅРѕРµ СЃР¶Р°С‚РёРµ
 Point* shrink(Point* s, int n, double sigma) {
     for (int i = 1; i <= n; i++)
         s[i] = s[0] + sigma * (s[i] - s[0]);
     return s;
 }
 
-// Растояние между двумя точками
+// Р Р°СЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ РґРІСѓРјСЏ С‚РѕС‡РєР°РјРё
 double FindEdge(Point pf, Point ps) {
     double result = 0;
 
