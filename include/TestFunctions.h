@@ -24,3 +24,7 @@ double Himmelblau(Point p) {
 double FuncEasy(Point p) {
     return pow(3 - p.x[0], 2) + pow(p.x[1] - p.x[0] * p.x[0], 2);
 }
+
+double FuncThrio(Point p) {
+    return pow(3 - p.x[0], 2) + pow(p.x[1] - p.x[0] * p.x[0], 4) + pow(p.x[2] * p.x[1] - 18, 2);
+}
