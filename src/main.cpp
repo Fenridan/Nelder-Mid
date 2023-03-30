@@ -15,8 +15,7 @@ int main() {
     parameter.tol = 0.0001;
 
     function < double(Point) > func; // Функция
-    //func = Rosenbrook;
-    //func = FuncEasy;
+    
     func = Himmelblau;
 
     Point result = NelderMead(num, parameter, func);
